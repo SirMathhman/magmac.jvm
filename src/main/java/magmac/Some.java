@@ -1,17 +1,21 @@
 package magmac;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
-public class Some implements Option {
-    private final Path value;
+public class Some<T> implements Option<T> {
+    private final T value;
 
-    public Some(Path value) {
+    public Some(T value) {
         this.value = value;
     }
 
     @Override
-    public Path orElseThrow(SupplierE0<IOException> supplier) throws IOException {
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public T orElseThrow(SupplierE0<IOException> supplier) {
         return value;
     }
 }
