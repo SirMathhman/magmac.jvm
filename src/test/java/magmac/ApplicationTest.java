@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,10 +20,7 @@ public class ApplicationTest {
     }
 
     private Path run() throws IOException {
-        var path = Paths.get(".", "main.c");
-        Files.createFile(path);
-        Files.writeString(path, "#include <stdio.h>\nint main(){return 0;}");
-        return path;
+        return new Application().run();
     }
 
     @Test
