@@ -14,12 +14,7 @@ public class ApplicationTest {
     @Test
     void should_write_content() throws IOException {
         var source = writeSource();
-        var target = new Application().run().orElseThrow(new SupplierE0<>() {
-            @Override
-            public IOException get() {
-                return new IOException("No value was present.");
-            }
-        });
+        var target = run();
         var actual = Files.readString(target);
         var expected = "#include <stdio.h>\nint main(){return 0;}";
         assertEquals(expected, actual);
@@ -32,6 +27,11 @@ public class ApplicationTest {
         return source;
     }
 
+    private Path run() throws IOException {
+        return new Application()
+                .run().orElseThrow(() -> new IOException("No target was written."));
+    }
+
     private void tearDown(Path source, Path target) throws IOException {
         Files.delete(target);
         Files.delete(source);
@@ -40,12 +40,7 @@ public class ApplicationTest {
     @Test
     void should_write_file_if_not_exist() throws IOException {
         var source = writeSource();
-        var target = new Application().run().orElseThrow(new SupplierE0<>() {
-            @Override
-            public IOException get() {
-                return new IOException("No value was present.");
-            }
-        });
+        var target = run();
         assertTrue(Files.exists(target));
         tearDown(source, target);
     }
