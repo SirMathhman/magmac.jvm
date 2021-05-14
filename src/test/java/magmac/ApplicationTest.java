@@ -1,40 +1,58 @@
 package magmac;
 
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ApplicationTest {
     private static final Path Root = Paths.get(".");
     private static final Path Source = Root.resolve("main.mgs");
-    private static final Path Target = Root.resolve("main.js");
 
     @RepeatedTest(2)
     void should_create_source_file() throws IOException {
-        Files.createFile(Source);
+        setUp("");
         var target = run();
         assertTrue(Files.exists(target));
-        Files.delete(target);
-        Files.delete(Source);
+        tearDown(target);
+    }
+
+    private void setUp(String content) throws IOException {
+        if (!Files.exists(Source)) Files.createFile(Source);
+        Files.writeString(Source, content);
     }
 
     private Path run() throws IOException {
+        var target = Root.resolve("main.js");
         if (Files.exists(Source)) {
-            if (!Files.exists(Target)) {
-                Files.createFile(Target);
+            if (!Files.exists(target)) {
+                Files.createFile(target);
             }
+            Files.writeString(target, "Hello World!");
         }
-        return Target;
+        return target;
+    }
+
+    private void tearDown(Path target) throws IOException {
+        Files.delete(target);
+        Files.delete(Source);
     }
 
     @RepeatedTest(2)
     void should_not_create_source_file() throws IOException {
         assertFalse(Files.exists(run()));
+    }
+
+    @Test
+    void string() throws IOException {
+        setUp("\"Hello World!\"");
+        var target = run();
+        assertEquals("\"Hello World!\"", Files.readString(target));
+        tearDown(target);
     }
 }

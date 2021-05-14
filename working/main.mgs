@@ -1,7 +1,7 @@
-native type NativeString
+native type JSString
 
 native const console = {
-    log : NativeString => Void
+    log : JSString => Void
 }
 
 console.log("Hello World!")
