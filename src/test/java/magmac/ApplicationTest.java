@@ -1,7 +1,6 @@
 package magmac;
 
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,24 +11,26 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ApplicationTest {
+    private static final Path Root = Paths.get(".");
+    private static final Path Source = Root.resolve("main.mgs");
+    private static final Path Target = Root.resolve("main.js");
+
     @RepeatedTest(2)
     void should_create_source_file() throws IOException {
-        var source = Paths.get(".", "main.mgs");
-        Files.createFile(source);
+        Files.createFile(Source);
         var target = run();
         assertTrue(Files.exists(target));
         Files.delete(target);
-        Files.delete(source);
+        Files.delete(Source);
     }
 
     private Path run() throws IOException {
-        var target = Paths.get(".", "main.js");
-        if (Files.exists(Paths.get(".", "main.mgs"))) {
-            if (!Files.exists(target)) {
-                Files.createFile(target);
+        if (Files.exists(Source)) {
+            if (!Files.exists(Target)) {
+                Files.createFile(Target);
             }
         }
-        return target;
+        return Target;
     }
 
     @RepeatedTest(2)
