@@ -14,14 +14,6 @@ public class ApplicationTest {
     private static final Path Root = Paths.get(".");
     private static final Path Source = Root.resolve("main.mgs");
 
-    @RepeatedTest(2)
-    void should_create_source_file() throws IOException {
-        setUp("");
-        var target = run();
-        assertTrue(Files.exists(target));
-        tearDown(target);
-    }
-
     private void setUp(String content) throws IOException {
         ensureFile(Source);
         Files.writeString(Source, content);
@@ -36,13 +28,21 @@ public class ApplicationTest {
         return target;
     }
 
+    private void ensureFile(Path source) throws IOException {
+        if (!Files.exists(source)) Files.createFile(source);
+    }
+
+    @RepeatedTest(2)
+    void should_create_source_file() throws IOException {
+        setUp("");
+        var target = run();
+        assertTrue(Files.exists(target));
+        tearDown(target);
+    }
+
     private void tearDown(Path target) throws IOException {
         Files.delete(target);
         Files.delete(Source);
-    }
-
-    private void ensureFile(Path source) throws IOException {
-        if (!Files.exists(source)) Files.createFile(source);
     }
 
     @RepeatedTest(2)
