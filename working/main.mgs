@@ -1,0 +1,7 @@
+native type NativeString
+
+native const console = {
+    log : NativeString => Void
+}
+
+console.log("Hello World!")
