@@ -8,8 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FileSourceTest {
-
-    public static final FileSource Source = new FileSource(new VirtualFile());
+    public static final FileSource Source = new FileSource(new VirtualFile("test"));
 
     @Test
     void exists() {

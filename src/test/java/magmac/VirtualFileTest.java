@@ -2,7 +2,7 @@ package magmac;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class VirtualFileTest {
 
@@ -12,6 +12,7 @@ class VirtualFileTest {
 
     @Test
     void readString() {
+        assertEquals("test", new VirtualFile("test").readString());
     }
 
     @Test
