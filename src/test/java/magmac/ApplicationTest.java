@@ -1,5 +1,6 @@
 package magmac;
 
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ApplicationTest {
-    @Test
+    @RepeatedTest(2)
     void should_create_source_file() throws IOException {
         var source = Paths.get(".", "main.mgs");
         Files.createFile(source);
@@ -31,7 +32,7 @@ public class ApplicationTest {
         return target;
     }
 
-    @Test
+    @RepeatedTest(2)
     void should_not_create_source_file() throws IOException {
         assertFalse(Files.exists(run()));
     }
