@@ -13,7 +13,7 @@ public class ApplicationTest {
     public static final ReferenceSource Source = new ReferenceSource(SourceReference);
     public static final Application Application_ = new Application(Source);
 
-    @Test
+    @RepeatedTest(2)
     void empty() throws IOException, ApplicationException {
         assertTargetEquals("", "");
     }
@@ -38,10 +38,11 @@ public class ApplicationTest {
         SourceReference.asFile().delete();
     }
 
-    @Test
+    @RepeatedTest(2)
     void invalidateInvocation() throws IOException {
         setUp("log(\"Hello World!\"");
         assertThrows(ApplicationException.class, Application_::run);
+        SourceReference.asFile().delete();
     }
 
     @RepeatedTest(2)
@@ -57,7 +58,7 @@ public class ApplicationTest {
         assertFalse(Application_.run().exists("main"));
     }
 
-    @Test
+    @RepeatedTest(2)
     void string() throws IOException, ApplicationException {
         assertTargetEquals("\"Hello World!\"", "\"Hello World!\"");
     }
