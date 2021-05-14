@@ -3,6 +3,11 @@ package magmac;
 import java.io.IOException;
 
 public class EmptyTarget implements Target {
+    public static final Target EmptyTarget_ = new EmptyTarget();
+
+    private EmptyTarget() {
+    }
+
     @Override
     public NIOFile apply(String name) throws TargetException {
         throw new UnsupportedOperationException();

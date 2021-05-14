@@ -51,23 +51,23 @@ public class ApplicationTest {
         if (Files.exists(Source)) {
             return writeTarget(target);
         } else {
-            return new EmptyTarget();
+            return EmptyTarget.EmptyTarget_;
         }
     }
 
     private Target writeTarget(NIOReference target) throws IOException, ApplicationException {
-        var output = Files.readString(Source);
+        var input = Files.readString(Source);
         var targetFile = target.ensureFile();
-        if (!output.isBlank()) {
-            NIOFile result = writeOutput(output, targetFile);
+        if (!input.isBlank()) {
+            NIOFile result = writeOutput(input, targetFile);
             return new SingletonTarget("main", result);
         } else {
             return new SingletonTarget("main", targetFile.writeString(""));
         }
     }
 
-    private NIOFile writeOutput(String output, NIOFile target) throws ApplicationException, IOException {
-        if (output.equals("log(\"Hello World!\"")) {
+    private NIOFile writeOutput(String input, NIOFile target) throws ApplicationException, IOException {
+        if (input.equals("log(\"Hello World!\"")) {
             throw new ApplicationException("'log' is not defined.");
         }
         return target.writeString("\"Hello World!\"");
