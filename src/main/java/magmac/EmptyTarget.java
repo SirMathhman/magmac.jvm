@@ -20,6 +20,6 @@ public class EmptyTarget implements Target {
 
     @Override
     public boolean exists(String name) {
-        throw new UnsupportedOperationException();
+        return false;
     }
 }
