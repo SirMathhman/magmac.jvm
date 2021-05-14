@@ -14,22 +14,13 @@ public class ApplicationTest {
     private static final Path Root = Paths.get(".");
     private static final Path Source = Root.resolve("main.mgs");
 
-    private void setUp(String content) throws IOException {
-        ensureFile(Source);
-        Files.writeString(Source, content);
-    }
-
-    private Path run() throws IOException {
-        var target = Root.resolve("main.js");
-        if (Files.exists(Source)) {
-            ensureFile(target);
-            Files.writeString(target, "\"Hello World!\"");
-        }
-        return target;
-    }
-
-    private void ensureFile(Path source) throws IOException {
-        if (!Files.exists(source)) Files.createFile(source);
+    @Test
+    void empty() throws IOException {
+        setUp("");
+        var target = run();
+        var content = Files.readString(target);
+        assertEquals("", content);
+        tearDown(target);
     }
 
     @RepeatedTest(2)
@@ -40,9 +31,30 @@ public class ApplicationTest {
         tearDown(target);
     }
 
+    private void setUp(String content) throws IOException {
+        ensureFile(Source);
+        Files.writeString(Source, content);
+    }
+
+    private Path run() throws IOException {
+        var target = Root.resolve("main.js");
+        if (Files.exists(Source)) {
+            var content = Files.readString(Source);
+            if(!content.isBlank()) {
+                Files.writeString(target, "\"Hello World!\"");
+            }
+            ensureFile(target);
+        }
+        return target;
+    }
+
     private void tearDown(Path target) throws IOException {
         Files.delete(target);
         Files.delete(Source);
+    }
+
+    private void ensureFile(Path source) throws IOException {
+        if (!Files.exists(source)) Files.createFile(source);
     }
 
     @RepeatedTest(2)
