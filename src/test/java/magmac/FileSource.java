@@ -16,6 +16,6 @@ public class FileSource implements Source {
 
     @Override
     public String read() throws IOException {
-        throw new UnsupportedOperationException();
+        return file.readString();
     }
 }
