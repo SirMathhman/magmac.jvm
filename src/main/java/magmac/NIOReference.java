@@ -13,11 +13,11 @@ public class NIOReference {
         this.source = source;
     }
 
-    public NIOFile asFile() {
+    public File asFile() {
         throw new UnsupportedOperationException();
     }
 
-    NIOFile ensureFile() throws IOException {
+    File ensureFile() throws IOException {
         if (!Files.exists(source)) Files.createFile(source);
         return new NIOFile(source);
     }

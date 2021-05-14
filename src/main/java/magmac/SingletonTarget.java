@@ -3,10 +3,10 @@ package magmac;
 import java.io.IOException;
 
 public class SingletonTarget implements Target {
-    private final NIOFile value;
+    private final File value;
     private final String name;
 
-    public SingletonTarget(String name, NIOFile value) {
+    public SingletonTarget(String name, File value) {
         this.name = name;
         this.value = value;
     }
@@ -17,7 +17,7 @@ public class SingletonTarget implements Target {
     }
 
     @Override
-    public NIOFile apply(String name) throws TargetException {
+    public File apply(String name) throws TargetException {
         if (this.name.equals(name)) {
             return value;
         } else {

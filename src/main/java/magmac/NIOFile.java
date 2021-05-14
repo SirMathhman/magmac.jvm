@@ -4,22 +4,25 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class NIOFile {
+public class NIOFile implements File {
     private final Path source;
 
     public NIOFile(Path source) {
         this.source = source;
     }
 
-    void delete() throws IOException {
+    @Override
+    public void delete() throws IOException {
         Files.delete(source);
     }
 
-    String readString() throws IOException {
+    @Override
+    public String readString() throws IOException {
         return Files.readString(source);
     }
 
-    NIOFile writeString(String content) throws IOException {
+    @Override
+    public File writeString(String content) throws IOException {
         return new NIOFile(Files.writeString(source, content));
     }
 }

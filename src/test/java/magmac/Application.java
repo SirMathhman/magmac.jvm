@@ -40,7 +40,7 @@ public class Application {
         }
     }
 
-    NIOFile writeOutput(String input, NIOFile target) throws ApplicationException, IOException {
+    File writeOutput(String input, File target) throws ApplicationException, IOException {
         if (input.equals("log(\"Hello World!\"")) {
             throw new ApplicationException("'log' is not defined.");
         }

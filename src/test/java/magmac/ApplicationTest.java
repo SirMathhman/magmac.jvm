@@ -29,7 +29,7 @@ public class ApplicationTest {
         tearDown(reference);
     }
 
-    private NIOFile setUp(String content) throws IOException {
+    private File setUp(String content) throws IOException {
         return SourceReference.ensureFile().writeString(content);
     }
 

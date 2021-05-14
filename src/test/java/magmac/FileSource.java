@@ -3,9 +3,9 @@ package magmac;
 import java.io.IOException;
 
 public class FileSource implements Source {
-    private final NIOFile file;
+    private final File file;
 
-    public FileSource(NIOFile file) {
+    public FileSource(File file) {
         this.file = file;
     }
 

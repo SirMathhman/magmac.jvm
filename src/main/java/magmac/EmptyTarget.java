@@ -9,7 +9,7 @@ public class EmptyTarget implements Target {
     }
 
     @Override
-    public NIOFile apply(String name) throws TargetException {
+    public File apply(String name) throws TargetException {
         throw new UnsupportedOperationException();
     }
 
