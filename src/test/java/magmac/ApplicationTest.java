@@ -8,11 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static magmac.NIOReference.Root;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ApplicationTest {
-    private static final Path Root = Paths.get(".");
-    private static final Path Source = Root.resolve("main.mgs");
+    private static final Path Source = Paths.get(".").resolve("main.mgs");
 
     @Test
     void empty() throws IOException, ApplicationException {
@@ -21,43 +21,53 @@ public class ApplicationTest {
 
     private void assertTargetEquals(String source, String target) throws IOException, ApplicationException {
         setUp(source);
-        var written = run();
-        var content = Files.readString(written);
+        var reference = run();
+        var written = reference.apply();
+        var content = written.readString();
         assertEquals(target, content);
-        tearDown(written);
+        tearDown(reference);
     }
 
     private void setUp(String content) throws IOException {
-        ensureFile(Source);
-        Files.writeString(Source, content);
+        new NIOReference(Source).ensureFile();
+        new NIOFile(Source).writeString(content);
     }
 
-    private Path run() throws ApplicationException {
+    private Target run() throws ApplicationException {
         try {
-            var target = Root.resolve("main.js");
-            if (Files.exists(Source)) {
-                var content = Files.readString(Source);
-                ensureFile(target);
-                if (!content.isBlank()) {
-                    if (content.equals("log(\"Hello World!\"")) {
-                        throw new ApplicationException("'log' is not defined.");
-                    }
-                    Files.writeString(target, "\"Hello World!\"");
-                }
-            }
-            return target;
+            return runExceptionally();
         } catch (IOException e) {
             throw new ApplicationException("Failed to run application.", e);
         }
     }
 
-    private void tearDown(Path target) throws IOException {
-        Files.delete(target);
+    private void tearDown(Target target) throws IOException {
+        target.delete();
         Files.delete(Source);
     }
 
-    private void ensureFile(Path source) throws IOException {
-        if (!Files.exists(source)) Files.createFile(source);
+    private Target runExceptionally() throws IOException, ApplicationException {
+        var target = Root.resolve("main.js");
+        if (Files.exists(Source)) {
+            return new Target(writeTarget(target));
+        }
+        return new Target(null);
+    }
+
+    private NIOFile writeTarget(NIOReference path) throws IOException, ApplicationException {
+        var output = Files.readString(Source);
+        var targetFile = path.ensureFile();
+        if (!output.isBlank()) {
+            return writeOutput(output, targetFile);
+        }
+        return null;
+    }
+
+    private NIOFile writeOutput(String output, NIOFile target) throws ApplicationException, IOException {
+        if (output.equals("log(\"Hello World!\"")) {
+            throw new ApplicationException("'log' is not defined.");
+        }
+        return target.writeString("\"Hello World!\"");
     }
 
     @Test
@@ -70,13 +80,13 @@ public class ApplicationTest {
     void should_create_source_file() throws IOException, ApplicationException {
         setUp("");
         var target = run();
-        assertTrue(Files.exists(target));
+        assertTrue(target.exists("main"));
         tearDown(target);
     }
 
     @RepeatedTest(2)
     void should_not_create_source_file() throws ApplicationException {
-        assertFalse(Files.exists(run()));
+        assertFalse(run().exists("main"));
     }
 
     @Test
