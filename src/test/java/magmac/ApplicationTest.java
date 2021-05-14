@@ -1,0 +1,32 @@
+package magmac;
+
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class ApplicationTest {
+    @Test
+    void should_create_source_file() throws IOException {
+        Files.createFile(Paths.get(".", "main.mgs"));
+        assertTrue(Files.exists(run()));
+    }
+
+    private Path run() throws IOException {
+        var target = Paths.get(".", "main.js");
+        if (Files.exists(Paths.get(".", "main.mgs"))) {
+            Files.createFile(target);
+        }
+        return target;
+    }
+
+    @Test
+    void should_not_create_source_file() throws IOException {
+        assertFalse(Files.exists(run()));
+    }
+}
