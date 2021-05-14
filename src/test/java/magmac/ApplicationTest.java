@@ -4,92 +4,57 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static magmac.NIOReference.Root;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ApplicationTest {
-    private static final Path Source = Paths.get(".").resolve("main.mgs");
+    public static final NIOReference SourceReference = Root.resolve("main.mgs");
+    public static final ReferenceSource Source = new ReferenceSource(SourceReference);
+    public static final Application Application_ = new Application(Source);
 
     @Test
     void empty() throws IOException, ApplicationException {
         assertTargetEquals("", "");
     }
 
-    private void assertTargetEquals(String source, String target) throws IOException, ApplicationException {
-        setUp(source);
-        var reference = run();
-        var written = reference.apply("main");
-        var content = written.readString();
-        assertEquals(target, content);
+    private void assertTargetEquals(String input, String output) throws IOException, ApplicationException {
+        var sourceFile = setUp(input);
+        var source = new FileSource(sourceFile);
+        var application = new Application(source);
+        var reference = application.run();
+        var targetFile = reference.apply("main");
+        var content = targetFile.readString();
+        assertEquals(output, content);
         tearDown(reference);
     }
 
-    private void setUp(String content) throws IOException {
-        new NIOReference(Source).ensureFile();
-        new NIOFile(Source).writeString(content);
-    }
-
-    private Target run() throws ApplicationException {
-        try {
-            return runExceptionally();
-        } catch (IOException e) {
-            throw new ApplicationException("Failed to run application.", e);
-        }
+    private NIOFile setUp(String content) throws IOException {
+        return SourceReference.ensureFile().writeString(content);
     }
 
     private void tearDown(Target target) throws IOException {
         target.delete();
-        Files.delete(Source);
-    }
-
-    private Target runExceptionally() throws IOException, ApplicationException {
-        var target = Root.resolve("main.js");
-        if (Files.exists(Source)) {
-            return writeTarget(target);
-        } else {
-            return EmptyTarget.EmptyTarget_;
-        }
-    }
-
-    private Target writeTarget(NIOReference target) throws IOException, ApplicationException {
-        var input = Files.readString(Source);
-        var targetFile = target.ensureFile();
-        if (!input.isBlank()) {
-            NIOFile result = writeOutput(input, targetFile);
-            return new SingletonTarget("main", result);
-        } else {
-            return new SingletonTarget("main", targetFile.writeString(""));
-        }
-    }
-
-    private NIOFile writeOutput(String input, NIOFile target) throws ApplicationException, IOException {
-        if (input.equals("log(\"Hello World!\"")) {
-            throw new ApplicationException("'log' is not defined.");
-        }
-        return target.writeString("\"Hello World!\"");
+        SourceReference.asFile().delete();
     }
 
     @Test
     void invalidateInvocation() throws IOException {
         setUp("log(\"Hello World!\"");
-        assertThrows(ApplicationException.class, this::run);
+        assertThrows(ApplicationException.class, Application_::run);
     }
 
     @RepeatedTest(2)
     void should_create_source_file() throws IOException, ApplicationException {
         setUp("");
-        var target = run();
+        var target = Application_.run();
         assertTrue(target.exists("main"));
         tearDown(target);
     }
 
     @RepeatedTest(2)
     void should_not_create_source_file() throws ApplicationException {
-        assertFalse(run().exists("main"));
+        assertFalse(Application_.run().exists("main"));
     }
 
     @Test
