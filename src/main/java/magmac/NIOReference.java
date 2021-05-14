@@ -23,7 +23,7 @@ public class NIOReference {
     }
 
     public boolean exists() {
-        throw new UnsupportedOperationException();
+        return Files.exists(source);
     }
 
     NIOReference resolve(String name) {
