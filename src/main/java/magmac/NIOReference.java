@@ -5,28 +5,36 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class NIOReference {
-    public static final NIOReference Root = new NIOReference(Paths.get("."));
+public class NIOReference implements Reference {
+    public static final Reference Root = new NIOReference(Paths.get("."));
     private final Path source;
 
     public NIOReference(Path source) {
         this.source = source;
     }
 
-    public File asFile() {
-        throw new UnsupportedOperationException();
+    @Override
+    public File asFile() throws IOException {
+        if(Files.exists(source) && Files.isRegularFile(source)) {
+            return new NIOFile(source);
+        } else {
+            throw new IOException("'%s' is not a file.".formatted(source.toAbsolutePath().toString()));
+        }
     }
 
-    File ensureFile() throws IOException {
+    @Override
+    public File ensureFile() throws IOException {
         if (!Files.exists(source)) Files.createFile(source);
         return new NIOFile(source);
     }
 
+    @Override
     public boolean exists() {
         return Files.exists(source);
     }
 
-    NIOReference resolve(String name) {
+    @Override
+    public Reference resolve(String name) {
         return new NIOReference(source.resolve(name));
     }
 }

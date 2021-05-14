@@ -29,7 +29,7 @@ public class Application {
         }
     }
 
-    Target writeTarget(NIOReference target) throws IOException, ApplicationException {
+    Target writeTarget(Reference target) throws IOException, ApplicationException {
         var input = source.read();
         var targetFile = target.ensureFile();
         if (!input.isBlank()) {

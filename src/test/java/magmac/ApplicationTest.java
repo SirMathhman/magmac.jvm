@@ -9,7 +9,7 @@ import static magmac.NIOReference.Root;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ApplicationTest {
-    public static final NIOReference SourceReference = Root.resolve("main.mgs");
+    public static final Reference SourceReference = Root.resolve("main.mgs");
     public static final ReferenceSource Source = new ReferenceSource(SourceReference);
     public static final Application Application_ = new Application(Source);
 
