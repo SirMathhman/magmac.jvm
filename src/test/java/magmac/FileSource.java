@@ -11,7 +11,7 @@ public class FileSource implements Source {
 
     @Override
     public boolean exists() {
-        throw new UnsupportedOperationException();
+        return true;
     }
 
     @Override
