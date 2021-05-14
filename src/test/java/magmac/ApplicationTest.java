@@ -40,10 +40,10 @@ public class ApplicationTest {
         var target = Root.resolve("main.js");
         if (Files.exists(Source)) {
             var content = Files.readString(Source);
+            ensureFile(target);
             if(!content.isBlank()) {
                 Files.writeString(target, "\"Hello World!\"");
             }
-            ensureFile(target);
         }
         return target;
     }
