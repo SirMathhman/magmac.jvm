@@ -49,18 +49,21 @@ public class ApplicationTest {
     private Target runExceptionally() throws IOException, ApplicationException {
         var target = Root.resolve("main.js");
         if (Files.exists(Source)) {
-            return new Target("main", writeTarget(target));
+            return writeTarget(target);
+        } else {
+            return new EmptyTarget();
         }
-        return new Target("main", null);
     }
 
-    private NIOFile writeTarget(NIOReference path) throws IOException, ApplicationException {
+    private Target writeTarget(NIOReference target) throws IOException, ApplicationException {
         var output = Files.readString(Source);
-        var targetFile = path.ensureFile();
+        var targetFile = target.ensureFile();
         if (!output.isBlank()) {
-            return writeOutput(output, targetFile);
+            NIOFile result = writeOutput(output, targetFile);
+            return new SingletonTarget("main", result);
+        } else {
+            return new SingletonTarget("main", targetFile.writeString(""));
         }
-        return null;
     }
 
     private NIOFile writeOutput(String output, NIOFile target) throws ApplicationException, IOException {
