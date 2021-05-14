@@ -16,11 +16,15 @@ public class ApplicationTest {
 
     @Test
     void empty() throws IOException, ApplicationException {
-        setUp("");
-        var target = run();
-        var content = Files.readString(target);
-        assertEquals("", content);
-        tearDown(target);
+        assertTargetEquals("", "");
+    }
+
+    private void assertTargetEquals(String source, String target) throws IOException, ApplicationException {
+        setUp(source);
+        var written = run();
+        var content = Files.readString(written);
+        assertEquals(target, content);
+        tearDown(written);
     }
 
     private void setUp(String content) throws IOException {
@@ -77,9 +81,11 @@ public class ApplicationTest {
 
     @Test
     void string() throws IOException, ApplicationException {
-        setUp("\"Hello World!\"");
-        var target = run();
-        assertEquals("\"Hello World!\"", Files.readString(target));
-        tearDown(target);
+        assertTargetEquals("\"Hello World!\"", "\"Hello World!\"");
+    }
+
+    @Test
+    void validateInvocation() {
+
     }
 }
