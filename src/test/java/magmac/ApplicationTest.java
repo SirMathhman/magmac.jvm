@@ -33,7 +33,7 @@ public class ApplicationTest {
             if (!Files.exists(target)) {
                 Files.createFile(target);
             }
-            Files.writeString(target, "Hello World!");
+            Files.writeString(target, "\"Hello World!\"");
         }
         return target;
     }
