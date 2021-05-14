@@ -22,7 +22,7 @@ public class ApplicationTest {
     private void assertTargetEquals(String source, String target) throws IOException, ApplicationException {
         setUp(source);
         var reference = run();
-        var written = reference.apply();
+        var written = reference.apply("main");
         var content = written.readString();
         assertEquals(target, content);
         tearDown(reference);
@@ -49,9 +49,9 @@ public class ApplicationTest {
     private Target runExceptionally() throws IOException, ApplicationException {
         var target = Root.resolve("main.js");
         if (Files.exists(Source)) {
-            return new Target(writeTarget(target));
+            return new Target("main", writeTarget(target));
         }
-        return new Target(null);
+        return new Target("main", null);
     }
 
     private NIOFile writeTarget(NIOReference path) throws IOException, ApplicationException {
