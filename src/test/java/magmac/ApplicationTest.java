@@ -23,16 +23,14 @@ public class ApplicationTest {
     }
 
     private void setUp(String content) throws IOException {
-        if (!Files.exists(Source)) Files.createFile(Source);
+        ensureFile(Source);
         Files.writeString(Source, content);
     }
 
     private Path run() throws IOException {
         var target = Root.resolve("main.js");
         if (Files.exists(Source)) {
-            if (!Files.exists(target)) {
-                Files.createFile(target);
-            }
+            ensureFile(target);
             Files.writeString(target, "\"Hello World!\"");
         }
         return target;
@@ -41,6 +39,10 @@ public class ApplicationTest {
     private void tearDown(Path target) throws IOException {
         Files.delete(target);
         Files.delete(Source);
+    }
+
+    private void ensureFile(Path source) throws IOException {
+        if (!Files.exists(source)) Files.createFile(source);
     }
 
     @RepeatedTest(2)
