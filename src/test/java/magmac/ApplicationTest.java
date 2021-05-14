@@ -15,19 +15,11 @@ public class ApplicationTest {
     private static final Path Source = Root.resolve("main.mgs");
 
     @Test
-    void empty() throws IOException {
+    void empty() throws IOException, ApplicationException {
         setUp("");
         var target = run();
         var content = Files.readString(target);
         assertEquals("", content);
-        tearDown(target);
-    }
-
-    @RepeatedTest(2)
-    void should_create_source_file() throws IOException {
-        setUp("");
-        var target = run();
-        assertTrue(Files.exists(target));
         tearDown(target);
     }
 
@@ -36,16 +28,23 @@ public class ApplicationTest {
         Files.writeString(Source, content);
     }
 
-    private Path run() throws IOException {
-        var target = Root.resolve("main.js");
-        if (Files.exists(Source)) {
-            var content = Files.readString(Source);
-            ensureFile(target);
-            if(!content.isBlank()) {
-                Files.writeString(target, "\"Hello World!\"");
+    private Path run() throws ApplicationException {
+        try {
+            var target = Root.resolve("main.js");
+            if (Files.exists(Source)) {
+                var content = Files.readString(Source);
+                ensureFile(target);
+                if (!content.isBlank()) {
+                    if (content.equals("log(\"Hello World!\"")) {
+                        throw new ApplicationException("Invalid input: " + content);
+                    }
+                    Files.writeString(target, "\"Hello World!\"");
+                }
             }
+            return target;
+        } catch (IOException e) {
+            throw new ApplicationException("Failed to run application.", e);
         }
-        return target;
     }
 
     private void tearDown(Path target) throws IOException {
@@ -57,13 +56,27 @@ public class ApplicationTest {
         if (!Files.exists(source)) Files.createFile(source);
     }
 
+    @Test
+    void invalidateInvocation() throws IOException {
+        setUp("log(\"Hello World!\"");
+        assertThrows(ApplicationException.class, this::run);
+    }
+
     @RepeatedTest(2)
-    void should_not_create_source_file() throws IOException {
+    void should_create_source_file() throws IOException, ApplicationException {
+        setUp("");
+        var target = run();
+        assertTrue(Files.exists(target));
+        tearDown(target);
+    }
+
+    @RepeatedTest(2)
+    void should_not_create_source_file() throws ApplicationException {
         assertFalse(Files.exists(run()));
     }
 
     @Test
-    void string() throws IOException {
+    void string() throws IOException, ApplicationException {
         setUp("\"Hello World!\"");
         var target = run();
         assertEquals("\"Hello World!\"", Files.readString(target));
