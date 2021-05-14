@@ -36,7 +36,7 @@ public class ApplicationTest {
                 ensureFile(target);
                 if (!content.isBlank()) {
                     if (content.equals("log(\"Hello World!\"")) {
-                        throw new ApplicationException("Invalid input: " + content);
+                        throw new ApplicationException("'log' is not defined.");
                     }
                     Files.writeString(target, "\"Hello World!\"");
                 }
