@@ -13,14 +13,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ApplicationTest {
     @Test
     void should_create_source_file() throws IOException {
-        Files.createFile(Paths.get(".", "main.mgs"));
-        assertTrue(Files.exists(run()));
+        var source = Paths.get(".", "main.mgs");
+        Files.createFile(source);
+        var target = run();
+        assertTrue(Files.exists(target));
+        Files.delete(target);
+        Files.delete(source);
     }
 
     private Path run() throws IOException {
         var target = Paths.get(".", "main.js");
         if (Files.exists(Paths.get(".", "main.mgs"))) {
-            Files.createFile(target);
+            if (!Files.exists(target)) {
+                Files.createFile(target);
+            }
         }
         return target;
     }
