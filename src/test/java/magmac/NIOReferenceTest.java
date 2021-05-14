@@ -34,7 +34,7 @@ class NIOReferenceTest {
     @Test
     void validate_as_file() throws IOException {
         Files.createFile(TestPath);
-        assertThrows(IOException.class, TestReference::asFile);
+        assertDoesNotThrow(TestReference::asFile);
         Files.delete(TestPath);
     }
 
